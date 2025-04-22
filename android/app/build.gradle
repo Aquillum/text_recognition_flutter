@@ -1,56 +1,35 @@
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
+// android/app/build.gradle
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin' // No version here!
 }
 
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+// The 'def localProperties ...' block should NOT be here.
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
+    namespace "studio.sdev.text_recognition_flutter"
+    // Use the compileSdk defined in android/build.gradle or a specific number
+    compileSdk flutter.compileSdkVersion // Use variable from Flutter plugin
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "studio.sdev.text_recognition_flutter"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        // Use minSdk defined in android/build.gradle or a specific number
+        minSdk flutter.minSdkVersion // Use variable from Flutter plugin
+        // Use targetSdk defined in android/build.gradle or a specific number
+        targetSdk flutter.targetSdkVersion // Use variable from Flutter plugin
+        versionCode 1 // Or use flutter.versionCode
+        versionName "1.0" // Or use flutter.versionName
+    }
+
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+}
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     buildTypes {
@@ -58,14 +37,34 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+
+            // Enables code shrinking, obfuscation, and optimization for release builds.
+            minifyEnabled true
+
+            // Enables resource shrinking, which reduces app size even further.
+            shrinkResources true // Recommended for release builds
+
+            // Specifies the ProGuard configuration files.
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' // Make sure 'proguard-rules.pro' is listed here
         }
     }
+
+    // The sourceSets block might be needed if you have Kotlin code mixed in java dirs,
+    // but often not necessary in pure Flutter setups unless you added native Kotlin.
+    // sourceSets {
+    //     main.java.srcDirs += 'src/main/kotlin'
+    // }
 }
 
+// This flutter block is important
 flutter {
     source '../..'
 }
 
 dependencies {
+    // Use the specific Kotlin version defined in the root build.gradle
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // Add other app-specific dependencies here
 }
+
+// The buildscript {}, allprojects {}, etc. blocks DO NOT belong in this file.

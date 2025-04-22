@@ -1,11 +1,53 @@
+// android/settings.gradle
+
+// android/settings.gradle
+
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        // Use settingsDir which refers to the directory containing settings.gradle (android)
+        def localPropertiesFile = new File(settingsDir, "local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+        } else {
+            // Check one level up (project root)
+            localPropertiesFile = new File(settingsDir.parentFile, "local.properties")
+            if (localPropertiesFile.exists()) {
+                localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+            } else {
+                // Handle case where file might be missing altogether
+                throw new FileNotFoundException("local.properties not found in ${settingsDir} or ${settingsDir.parentFile}")
+            }
+        }
+
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties. Please ensure you have a local.properties file in your 'android' directory (or project root) with the correct path, e.g., flutter.sdk=C:\\path\\to\\your\\flutter\\sdk"
+        // Make sure the path uses forward slashes for includeBuild, even on Windows
+        flutterSdkPath = flutterSdkPath.replaceAll('\\\\', '/')
+        return flutterSdkPath
+    }()
+
+    // This includes the necessary Flutter Gradle plugin logic from the SDK
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+
+plugins {
+    // This loader plugin handles applying the flutter plugin to the :app module
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    // Define versions for Android and Kotlin plugins - apply false means they are just declared here for use later
+    id "com.android.application" version "8.3.0" apply false // Use the same version as in android/build.gradle
+    id "org.jetbrains.kotlin.android" version "1.8.20" apply false // Use the same version as in android/build.gradle
+}
+
+// Includes the 'app' module (your Android application)
 include ':app'
 
-def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
-def properties = new Properties()
-
-assert localPropertiesFile.exists()
-localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
-
-def flutterSdkPath = properties.getProperty("flutter.sdk")
-assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle"
+// DO NOT add the 'apply from: ... include_flutter.groovy' line here for a standard project.
+// The 'dev.flutter.flutter-plugin-loader' handles this setup.

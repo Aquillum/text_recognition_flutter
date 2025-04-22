@@ -28,8 +28,8 @@ class _HomeViewState extends State<HomeView> {
     _picker = ImagePicker();
 
     /// Can be [MLKitTextRecognizer] or [TesseractTextRecognizer]
-    // _recognizer = MLKitTextRecognizer();
-    _recognizer = TesseractTextRecognizer();
+    _recognizer = MLKitTextRecognizer();
+    // _recognizer = TesseractTextRecognizer();
   }
 
   @override

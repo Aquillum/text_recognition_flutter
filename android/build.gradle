@@ -1,13 +1,21 @@
+// android/build.gradle (Root Android project)
+
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    // Define versions in ext block
+    ext.kotlin_version = '1.8.20' // Or the version compatible with your Flutter SDK/Gradle plugin
+    ext.compileSdkVersion = 34     // Example: Define SDK versions here
+    ext.minSdkVersion = 21
+    ext.targetSdkVersion = 34
+
     repositories {
         google()
         mavenCentral()
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
+        // Use the AGP version defined in settings.gradle (e.g., 7.4.2)
+        classpath "com.android.tools.build:gradle:8.3.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Add other root-level build dependencies if needed
     }
 }
 
@@ -18,14 +26,31 @@ allprojects {
     }
 }
 
-rootProject.buildDir = '../build'
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(':app')
+// Task to clean the build directory
+tasks.register("clean", Delete) {
+    delete rootProject.layout.buildDirectory
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+// Optional: If you want to define properties accessible in subprojects
+// subprojects {
+//     // Example: Accessing ext properties defined above
+//     // afterEvaluate { project ->
+//     //     if (project.hasProperty('android')) {
+//     //         android {
+//     //             compileSdkVersion rootProject.ext.compileSdkVersion
+//     //             defaultConfig {
+//     //                 minSdkVersion rootProject.ext.minSdkVersion
+//     //                 targetSdkVersion rootProject.ext.targetSdkVersion
+//     //             }
+//     //         }
+//     //     }
+//     // }
+// }
+
+// Note: The rootProject.buildDir and subprojects.project.buildDir settings
+// are often managed automatically or by the Flutter tooling now.
+// You might not need these lines:
+// rootProject.buildDir = '../build'
+// subprojects {
+//     project.buildDir = "${rootProject.buildDir}/${project.name}"
+// }

@@ -12,15 +12,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_tesseract_ocr: ^0.4.23
-  google_ml_text_recognizer: ^0.0.3
-  google_mlkit_text_recognition: ^0.8.1
+  google_mlkit_text_recognition: ^0.15.0
   image_picker: ^1.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
