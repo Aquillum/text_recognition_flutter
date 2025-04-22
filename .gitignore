@@ -37,7 +37,7 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android specific <<<--- ADDED/MODIFIED SECTION
+# Android specific <<<--- ADDED/MODIFIED SECTION by harry
 # Ignore the entire Android build directory (contains intermediates, outputs, etc.)
 /android/app/build/
 /android/app/.cxx/
